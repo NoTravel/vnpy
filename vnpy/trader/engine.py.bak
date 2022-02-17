@@ -236,15 +236,6 @@ class MainEngine:
         for gateway in self.gateways.values():
             gateway.close()
 
-    def getContractTradeStatus(self,contr:str,gateway_name: str):
-        """
-        查询合约(品种)交易状态,仅适用于Beft,不适用其它,20191017
-        """
-        gateway = self.get_gateway(gateway_name)
-        if gateway:
-            return gateway.getContractTradeStatus(contr)
-        else:
-            return False
 
 class BaseEngine(ABC):
     """
