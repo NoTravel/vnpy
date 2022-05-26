@@ -82,6 +82,25 @@ class OffsetConverter:
             return holding.convert_order_request_shfe(req)
         else:
             return [req]
+    
+    def convert_order_request_auto(
+        self,
+        req: OrderRequest
+    ) -> List[OrderRequest]:
+        """"""
+        if not self.is_convert_required(req.vt_symbol):
+            return [req]
+
+        holding = self.get_position_holding(req.vt_symbol)
+
+        if req.exchange in [Exchange.SHFE, Exchange.INE]:
+            return holding.convert_order_request_shfe(req)
+        elif (req.direction.name == "LONG" and holding.short_td > 0) or (req.direction.name == "SHORT" and holding.long_td >0):
+            return holding.convert_order_request_lock(req)
+        elif (req.direction.name == "LONG" and holding.short_td == 0) or (req.direction.name == "SHORT" and holding.long_td ==0):
+            return holding.convert_order_request_net(req)
+        else:
+            return [req]
 
     def is_convert_required(self, vt_symbol: str) -> bool:
         """
